@@ -413,7 +413,7 @@ body::before {
   place-items: center;
   background: rgba(5, 5, 16, 0.85);
   z-index: 20;
-  color: var(--cyan);
+  color: #34ff9a;
   font-family: "Orbitron", sans-serif;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -446,6 +446,14 @@ body::before {
   animation: scan 1.2s linear infinite;
 }
 
+.scan-hud p {
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  text-shadow: 0 0 8px rgba(52, 255, 154, 0.7), 0 0 18px rgba(52, 255, 154, 0.4);
+  animation: flicker 1.4s infinite;
+}
+
 @keyframes scan {
   0% { transform: translateY(-120px); }
   50% { transform: translateY(120px); }
@@ -465,6 +473,13 @@ body::before {
 @keyframes gridMove {
   from { transform: translateY(0); }
   to { transform: translateY(60px); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  40% { opacity: 0.7; }
+  60% { opacity: 0.9; }
+  80% { opacity: 0.5; }
 }
 
 @media (max-width: 720px) {

@@ -208,40 +208,46 @@ function scanProof() {
     return;
   }
   elements.scanHud.classList.remove("hidden");
-  const safetyTimeout = setTimeout(() => {
-    elements.scanHud.classList.add("hidden");
-  }, 2600);
-  playBeep(520, 0.08);
-  setTimeout(() => {
-    clearTimeout(safetyTimeout);
-    const hash = hashFile(file);
-    const now = Date.now();
-    let chance = 0.8;
-    let warning = "";
-    if (hash === state.lastHash && now - state.lastHashTime < 2 * 60 * 1000) {
-      chance = 0.1;
-      warning = " (cooldown active: repeated proof)";
-    }
-    const approved = Math.random() < chance;
-    state.lastHash = hash;
-    state.lastHashTime = now;
-    elements.scanHud.classList.add("hidden");
-    if (approved) {
-      state.points += state.settings.scanReward;
-      playBeep(880, 0.12);
-      elements.scanResult.textContent = `Approved +${state.settings.scanReward} pts${warning}`;
-      addHistory(`Scan approved in ${elements.category.value}. +${state.settings.scanReward} pts.`);
-      if (state.settings.autoConvert) {
-        convertPoints({ silent: true });
+  let safetyTimeout = null;
+  try {
+    safetyTimeout = setTimeout(() => {
+      elements.scanHud.classList.add("hidden");
+    }, 2600);
+    playBeep(520, 0.08);
+    setTimeout(() => {
+      clearTimeout(safetyTimeout);
+      const hash = hashFile(file);
+      const now = Date.now();
+      let chance = 0.8;
+      let warning = "";
+      if (hash === state.lastHash && now - state.lastHashTime < 2 * 60 * 1000) {
+        chance = 0.1;
+        warning = " (cooldown active: repeated proof)";
       }
-    } else {
-      playBeep(220, 0.2);
-      elements.scanResult.textContent = `Rejected${warning}`;
-      addHistory(`Scan rejected in ${elements.category.value}.`);
-    }
-    updateStats();
-    saveState();
-  }, 1900);
+      const approved = Math.random() < chance;
+      state.lastHash = hash;
+      state.lastHashTime = now;
+      elements.scanHud.classList.add("hidden");
+      if (approved) {
+        state.points += state.settings.scanReward;
+        playBeep(880, 0.12);
+        elements.scanResult.textContent = `Approved +${state.settings.scanReward} pts${warning}`;
+        addHistory(`Scan approved in ${elements.category.value}. +${state.settings.scanReward} pts.`);
+        if (state.settings.autoConvert) {
+          convertPoints({ silent: true });
+        }
+      } else {
+        playBeep(220, 0.2);
+        elements.scanResult.textContent = `Rejected${warning}`;
+        addHistory(`Scan rejected in ${elements.category.value}.`);
+      }
+      updateStats();
+      saveState();
+    }, 1900);
+  } catch (error) {
+    console.warn("Scan failed", error);
+    elements.scanHud.classList.add("hidden");
+  }
 }
 
 function handleFilePreview() {
@@ -287,6 +293,7 @@ function startApp() {
   elements.dashboard.classList.add("is-active");
   splashActive = false;
   stopThree();
+  elements.scanHud.classList.add("hidden");
 }
 
 function toggleReducedMotion() {
@@ -464,6 +471,9 @@ function init() {
   initBootSequence();
   initThree();
   elements.scanHud.classList.add("hidden");
+  window.addEventListener("pageshow", () => {
+    elements.scanHud.classList.add("hidden");
+  });
 }
 
 init();
