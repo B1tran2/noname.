@@ -318,6 +318,11 @@ function initEvents() {
   elements.resetData.addEventListener("click", resetData);
   elements.toggleReduced.addEventListener("click", toggleReducedMotion);
   elements.toggleSound.addEventListener("click", toggleSound);
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !elements.scanHud.classList.contains("hidden")) {
+      elements.scanHud.classList.add("hidden");
+    }
+  });
 }
 
 function supportsWebGL() {
