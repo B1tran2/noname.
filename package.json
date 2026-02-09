@@ -1,0 +1,19 @@
+{
+  "name": "noname",
+  "private": true,
+  "workspaces": [
+    "apps/backend",
+    "apps/web",
+    "packages/shared"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm:dev --workspace apps/backend\" \"npm:dev --workspace apps/web\"",
+    "build-backend": "npm run build --workspace apps/backend",
+    "build-web": "npm run build --workspace apps/web",
+    "build-windows": "pwsh -File scripts/build-windows.ps1",
+    "lint": "npm run lint --workspace apps/backend && npm run lint --workspace apps/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+artifacts/
+data/
+apps/backend/data/
+apps/web/dist/
+apps/windows/Noname/bin/
+apps/windows/Noname/obj/
+*.user
+*.suo
+*.log
