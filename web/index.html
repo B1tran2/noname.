@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Noname · Tiempo de vagueo productivo</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="logo">Noname</div>
+      <nav>
+        <button data-route="home" class="nav-btn">Inicio</button>
+        <button data-route="link" class="nav-btn">Vincular</button>
+        <button data-route="camera" class="nav-btn">Cámara</button>
+        <button data-route="enroll" class="nav-btn">Enrollment</button>
+        <button data-route="leaderboard" class="nav-btn">Ranking</button>
+        <button data-route="settings" class="nav-btn">Ajustes</button>
+      </nav>
+    </header>
+
+    <main id="app">
+      <section id="home" class="page active">
+        <div class="hero">
+          <h1>Tiempo de vagueo sin culpa</h1>
+          <p>
+            Sube una foto productiva, valida tu identidad y gana minutos. Sin logins, sin emails.
+          </p>
+          <div class="stats">
+            <div>
+              <span class="label">Puntos</span>
+              <span id="points" class="value">0</span>
+            </div>
+            <div>
+              <span class="label">Minutos</span>
+              <span id="minutes" class="value">0</span>
+            </div>
+            <div>
+              <span class="label">Racha</span>
+              <span id="streak" class="value">0</span>
+            </div>
+          </div>
+          <div class="cta-row">
+            <button class="primary" id="start-link">Vincular móvil</button>
+            <button class="ghost" id="start-camera">Enviar foto</button>
+          </div>
+        </div>
+
+        <section class="card">
+          <h2>Setup Wizard</h2>
+          <ol class="wizard">
+            <li>
+              <span>API activa</span>
+              <button id="check-api" class="ghost">Comprobar</button>
+              <span id="api-status" class="status">Pendiente</span>
+            </li>
+            <li>
+              <span>WebSocket relay</span>
+              <button id="check-ws" class="ghost">Probar</button>
+              <span id="ws-status" class="status">Pendiente</span>
+            </li>
+            <li>
+              <span>Sembrar bots DEMO</span>
+              <button id="seed-bots" class="ghost">Sembrar</button>
+              <span id="bots-status" class="status">Pendiente</span>
+            </li>
+          </ol>
+        </section>
+      </section>
+
+      <section id="link" class="page">
+        <div class="card">
+          <h2>Vincular PC ↔ Móvil</h2>
+          <p class="muted">Genera un código en PC y escanéalo desde el móvil.</p>
+          <div class="link-grid">
+            <div>
+              <button id="generate-link" class="primary">Generar código</button>
+              <div class="code-box" id="link-code">--------</div>
+              <p class="small">Expira en 10 minutos.</p>
+            </div>
+            <div>
+              <img id="link-qr" alt="QR" class="qr" />
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Desde el móvil</h3>
+          <label class="input">
+            Código
+            <input id="mobile-code" maxlength="8" placeholder="AB12CD34" />
+          </label>
+          <button id="mobile-connect" class="primary">Conectar</button>
+          <p id="mobile-status" class="status">Esperando conexión...</p>
+        </div>
+      </section>
+
+      <section id="camera" class="page">
+        <div class="card">
+          <h2>Cámara productiva</h2>
+          <p class="muted">Haz una foto productiva y envíala para validar.</p>
+          <div class="camera-grid">
+            <video id="camera-view" autoplay playsinline></video>
+            <canvas id="camera-canvas"></canvas>
+          </div>
+          <div class="cta-row">
+            <button id="take-photo" class="primary">Capturar</button>
+            <button id="send-photo" class="ghost">Enviar</button>
+          </div>
+          <label class="input">
+            Categoría
+            <select id="photo-category">
+              <option>Escribiendo</option>
+              <option>Estudiando</option>
+              <option>Ordenando</option>
+              <option>Entrenando</option>
+              <option>Cocinando</option>
+              <option>Otro</option>
+            </select>
+          </label>
+          <p id="photo-feedback" class="status">Lista para capturar.</p>
+        </div>
+      </section>
+
+      <section id="enroll" class="page">
+        <div class="card">
+          <h2>Enrollment (3 selfies)</h2>
+          <p class="muted">Guarda tus selfies localmente (IndexedDB). No salen de tu navegador.</p>
+          <div class="enroll-grid">
+            <video id="enroll-view" autoplay playsinline></video>
+            <canvas id="enroll-canvas"></canvas>
+          </div>
+          <div class="cta-row">
+            <button id="enroll-capture" class="primary">Capturar selfie</button>
+            <button id="enroll-reset" class="ghost">Reiniciar</button>
+          </div>
+          <ul id="enroll-list" class="status-list"></ul>
+          <p class="small">Limitación MVP: verificación basada en desafío guiado y coincidencia básica; no es biometría fuerte.</p>
+        </div>
+      </section>
+
+      <section id="leaderboard" class="page">
+        <div class="card">
+          <h2>Ranking global</h2>
+          <div class="tab-row">
+            <button data-board="total" class="tab active">Total</button>
+            <button data-board="weekly" class="tab">Semanal</button>
+          </div>
+          <ol id="leaderboard-list" class="leaderboard"></ol>
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="card">
+          <h2>Ajustes & privacidad</h2>
+          <label class="input">
+            Alias público
+            <input id="alias" placeholder="Anon123" />
+          </label>
+          <label class="input">
+            API Base URL
+            <input id="api-base" placeholder="https://tu-worker.workers.dev" />
+          </label>
+          <div class="cta-row">
+            <button id="save-settings" class="primary">Guardar</button>
+            <button id="reset-local" class="ghost">Reset local</button>
+          </div>
+          <div class="card muted-block">
+            <h3>Privacidad</h3>
+            <p>
+              Noname no guarda imágenes en el backend. Las fotos solo se usan como relay en tiempo real y se descartan.
+              Se almacenan únicamente puntajes, alias y timestamps. Tus selfies de enrollment se guardan solo en tu navegador.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Noname · MVP sin consola · Modo demo disponible si la API no está activa.</p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
