@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="./">
+  <title>Noname — Focus & Break</title>
+  <meta name="description" content="Noname: enfoque retrofuturista con pruebas locales, puntos y descansos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="theme-dark">
+  <div id="app" class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand__logo">◆</span>
+        <div>
+          <p class="brand__name">NONAME</p>
+          <p class="brand__tag">Focus Engine</p>
+        </div>
+      </div>
+      <div class="topbar__actions">
+        <button class="chip" id="toggle-reduced">Reduced motion</button>
+        <button class="chip" id="toggle-sound">Sound: On</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section id="splash" class="splash is-active">
+        <canvas id="scene" class="scene"></canvas>
+        <div id="fallback" class="fallback hidden">
+          <svg viewBox="0 0 600 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f72585" />
+                <stop offset="100%" stop-color="#4cc9f0" />
+              </linearGradient>
+            </defs>
+            <rect width="600" height="400" fill="#0b0b1b" />
+            <path d="M0 300 L600 180" stroke="#3a0ca3" stroke-width="2" />
+            <path d="M0 340 L600 220" stroke="#3a0ca3" stroke-width="2" />
+            <circle cx="300" cy="160" r="70" fill="url(#grad)" opacity="0.35" />
+            <rect x="250" y="200" width="100" height="110" rx="12" fill="#16162d" stroke="#4cc9f0" />
+            <rect x="270" y="220" width="60" height="40" rx="6" fill="#0b0b1b" stroke="#f72585" />
+            <rect x="260" y="270" width="80" height="30" rx="6" fill="#2b2b53" />
+          </svg>
+        </div>
+        <div class="splash__overlay">
+          <div class="boot" id="boot">
+            <p>> booting noname core...</p>
+            <p>> calibrating focus grid</p>
+            <p>> syncing neon matrix</p>
+          </div>
+          <div class="hero">
+            <h1 class="glitch" data-text="NONAME">NONAME</h1>
+            <p class="hero__subtitle">Tu motor local de enfoque, pruebas y descanso.</p>
+            <button id="start-btn" class="btn btn-primary">Start</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="dashboard">
+        <div class="grid">
+          <div class="card">
+            <h2>Focus Core</h2>
+            <div class="stat-row">
+              <div>
+                <p class="stat-label">Points</p>
+                <p class="stat-value" id="points">0</p>
+              </div>
+              <div>
+                <p class="stat-label">Minutes</p>
+                <p class="stat-value" id="minutes">0</p>
+              </div>
+            </div>
+            <div class="ratio">
+              <p>Ratio actual: <span id="ratio-label">10 pts = 5 min</span></p>
+            </div>
+            <div class="actions">
+              <button class="btn" id="convert-btn">Convertir puntos</button>
+              <button class="btn btn-secondary" id="start-break-btn">Start Break</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Upload Proof</h2>
+            <label class="upload">
+              <input type="file" id="file-input" accept="image/*" />
+              <span>Sube evidencia (imagen)</span>
+            </label>
+            <div class="preview">
+              <img id="preview-img" alt="Preview" />
+              <div id="preview-meta" class="preview-meta">Sin archivo</div>
+            </div>
+            <div class="field">
+              <label for="category">Categoría</label>
+              <select id="category">
+                <option>Estudio</option>
+                <option>Trabajo</option>
+                <option>Deporte</option>
+                <option>Hogar</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="scan-btn">Scan</button>
+            <div id="scan-result" class="scan-result"></div>
+          </div>
+
+          <div class="card">
+            <h2>Break Timer</h2>
+            <div class="timer" id="timer">00:00</div>
+            <p class="timer-label">Modo descanso activado con minutos disponibles.</p>
+          </div>
+
+          <div class="card">
+            <h2>Leaderboard (Demo)</h2>
+            <ol id="leaderboard" class="leaderboard"></ol>
+          </div>
+
+          <div class="card">
+            <h2>Settings</h2>
+            <div class="field">
+              <label for="ratio-points">Puntos necesarios</label>
+              <input id="ratio-points" type="number" min="1" value="10" />
+            </div>
+            <div class="field">
+              <label for="ratio-minutes">Minutos entregados</label>
+              <input id="ratio-minutes" type="number" min="1" value="5" />
+            </div>
+            <button class="btn" id="save-settings">Guardar</button>
+            <button class="btn btn-secondary" id="reset-data">Reset data</button>
+          </div>
+
+          <div class="card history">
+            <h2>History</h2>
+            <ul id="history"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="scan-hud" class="scan-hud hidden">
+    <div class="scan-hud__ring"></div>
+    <div class="scan-hud__line"></div>
+    <p>Scanning...</p>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+<!--
+PUBLICAR EN 2 MINUTOS:
+1) Crear repo en GitHub
+2) Subir estos 3 archivos a la raíz: index.html, styles.css, app.js
+3) Settings → Pages → Deploy from branch → main → /(root)
+4) Abrir la URL que muestra GitHub Pages
+-->
