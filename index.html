@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <base href="./">
   <title>Noname — Focus & Break</title>
-  <meta name="description" content="Noname: enfoque retrofuturista con pruebas locales, puntos y descansos." />
+  <meta name="description" content="Noname: a retrofuturistic focus engine with local scans, points, and breaks." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@
           </div>
           <div class="hero">
             <h1 class="glitch" data-text="NONAME">NONAME</h1>
-            <p class="hero__subtitle">Tu motor local de enfoque, pruebas y descanso.</p>
+            <p class="hero__subtitle">Your local focus engine for proof scans, points, and breaks.</p>
             <button id="start-btn" class="btn btn-primary">Start</button>
           </div>
         </div>
@@ -76,10 +76,10 @@
               </div>
             </div>
             <div class="ratio">
-              <p>Ratio actual: <span id="ratio-label">10 pts = 5 min</span></p>
+              <p>Current ratio: <span id="ratio-label">10 pts = 5 min</span></p>
             </div>
             <div class="actions">
-              <button class="btn" id="convert-btn">Convertir puntos</button>
+              <button class="btn" id="convert-btn">Convert points</button>
               <button class="btn btn-secondary" id="start-break-btn">Start Break</button>
             </div>
           </div>
@@ -88,19 +88,19 @@
             <h2>Upload Proof</h2>
             <label class="upload">
               <input type="file" id="file-input" accept="image/*" />
-              <span>Sube evidencia (imagen)</span>
+              <span>Upload proof (image)</span>
             </label>
             <div class="preview">
               <img id="preview-img" alt="Preview" />
-              <div id="preview-meta" class="preview-meta">Sin archivo</div>
+              <div id="preview-meta" class="preview-meta">No file yet</div>
             </div>
             <div class="field">
-              <label for="category">Categoría</label>
+              <label for="category">Category</label>
               <select id="category">
-                <option>Estudio</option>
-                <option>Trabajo</option>
-                <option>Deporte</option>
-                <option>Hogar</option>
+                <option>Study</option>
+                <option>Work</option>
+                <option>Sport</option>
+                <option>Home</option>
               </select>
             </div>
             <button class="btn btn-primary" id="scan-btn">Scan</button>
@@ -110,7 +110,7 @@
           <div class="card">
             <h2>Break Timer</h2>
             <div class="timer" id="timer">00:00</div>
-            <p class="timer-label">Modo descanso activado con minutos disponibles.</p>
+            <p class="timer-label">Break mode uses your available minutes.</p>
           </div>
 
           <div class="card">
@@ -121,14 +121,22 @@
           <div class="card">
             <h2>Settings</h2>
             <div class="field">
-              <label for="ratio-points">Puntos necesarios</label>
+              <label for="ratio-points">Points needed</label>
               <input id="ratio-points" type="number" min="1" value="10" />
             </div>
             <div class="field">
-              <label for="ratio-minutes">Minutos entregados</label>
+              <label for="ratio-minutes">Minutes granted</label>
               <input id="ratio-minutes" type="number" min="1" value="5" />
             </div>
-            <button class="btn" id="save-settings">Guardar</button>
+            <div class="field">
+              <label for="scan-reward">Scan reward (points)</label>
+              <input id="scan-reward" type="number" min="1" value="10" />
+            </div>
+            <label class="toggle">
+              <input id="auto-convert" type="checkbox" />
+              <span>Auto-convert on approval</span>
+            </label>
+            <button class="btn" id="save-settings">Save</button>
             <button class="btn btn-secondary" id="reset-data">Reset data</button>
           </div>
 
@@ -151,9 +159,9 @@
 </body>
 </html>
 <!--
-PUBLICAR EN 2 MINUTOS:
-1) Crear repo en GitHub
-2) Subir estos 3 archivos a la raíz: index.html, styles.css, app.js
+PUBLISH IN 2 MINUTES:
+1) Create a GitHub repo
+2) Upload these 3 files to the repo root: index.html, styles.css, app.js
 3) Settings → Pages → Deploy from branch → main → /(root)
-4) Abrir la URL que muestra GitHub Pages
+4) Open the URL GitHub Pages shows
 -->

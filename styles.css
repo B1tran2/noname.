@@ -24,12 +24,31 @@ body {
   background: radial-gradient(circle at top, #1b1b3a 0%, #0b0b1b 55%, #070712 100%);
   color: var(--text);
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(transparent 88%, rgba(76, 201, 240, 0.08) 90%),
+    linear-gradient(90deg, transparent 88%, rgba(247, 37, 133, 0.08) 90%);
+  background-size: 60px 60px;
+  opacity: 0.35;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: gridMove 8s linear infinite;
+  z-index: 0;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .topbar {
@@ -149,6 +168,7 @@ body {
   border-radius: 12px;
   width: min(420px, 100%);
   box-shadow: var(--glow);
+  animation: pulse 2.4s ease-in-out infinite;
 }
 
 .hero {
@@ -215,6 +235,12 @@ body {
   padding: 24px;
   box-shadow: 0 12px 40px rgba(5, 5, 18, 0.55);
   backdrop-filter: blur(12px);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 50px rgba(5, 5, 18, 0.7);
 }
 
 .card h2 {
@@ -400,6 +426,16 @@ body {
   border: 2px solid rgba(76, 201, 240, 0.5);
   box-shadow: var(--glow);
   position: relative;
+  animation: rotate 3.6s linear infinite;
+}
+
+.scan-hud__ring::after {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  border: 1px dashed rgba(247, 37, 133, 0.5);
+  animation: rotate 5s linear reverse infinite;
 }
 
 .scan-hud__line {
@@ -414,6 +450,21 @@ body {
   0% { transform: translateY(-120px); }
   50% { transform: translateY(120px); }
   100% { transform: translateY(-120px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: var(--glow); }
+  50% { box-shadow: 0 0 18px rgba(76, 201, 240, 0.4), 0 0 45px rgba(247, 37, 133, 0.2); }
+}
+
+@keyframes gridMove {
+  from { transform: translateY(0); }
+  to { transform: translateY(60px); }
 }
 
 @media (max-width: 720px) {
@@ -439,6 +490,20 @@ body {
 
 .reduced-motion .scan-hud__line {
   display: none;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
 }
 
 .closed-mode .scene,

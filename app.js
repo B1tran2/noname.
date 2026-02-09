@@ -5,6 +5,8 @@ const state = {
   settings: {
     ratioPoints: 10,
     ratioMinutes: 5,
+    scanReward: 10,
+    autoConvert: false,
     reducedMotion: false,
     sound: true,
   },
@@ -33,6 +35,8 @@ const elements = {
   history: document.getElementById("history"),
   ratioPoints: document.getElementById("ratio-points"),
   ratioMinutes: document.getElementById("ratio-minutes"),
+  scanReward: document.getElementById("scan-reward"),
+  autoConvert: document.getElementById("auto-convert"),
   saveSettings: document.getElementById("save-settings"),
   resetData: document.getElementById("reset-data"),
   toggleReduced: document.getElementById("toggle-reduced"),
@@ -90,6 +94,8 @@ function updateStats() {
   elements.ratioLabel.textContent = `${state.settings.ratioPoints} pts = ${state.settings.ratioMinutes} min`;
   elements.ratioPoints.value = state.settings.ratioPoints;
   elements.ratioMinutes.value = state.settings.ratioMinutes;
+  elements.scanReward.value = state.settings.scanReward;
+  elements.autoConvert.checked = state.settings.autoConvert;
   elements.toggleReduced.textContent = state.settings.reducedMotion ? "Reduced motion: On" : "Reduced motion";
   elements.toggleSound.textContent = `Sound: ${state.settings.sound ? "On" : "Off"}`;
   document.body.classList.toggle("reduced-motion", state.settings.reducedMotion);
@@ -99,7 +105,7 @@ function addHistory(entry) {
   state.history.unshift({
     id: crypto.randomUUID(),
     entry,
-    time: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }),
+    time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
   });
   state.history = state.history.slice(0, 12);
   saveState();
@@ -110,7 +116,7 @@ function renderHistory() {
   elements.history.innerHTML = "";
   if (!state.history.length) {
     const item = document.createElement("li");
-    item.textContent = "Sin actividad todavía.";
+    item.textContent = "No activity yet.";
     elements.history.appendChild(item);
     return;
   }
@@ -148,7 +154,7 @@ function playBeep(freq = 440, duration = 0.12) {
 
 function startBreak() {
   if (state.minutes <= 0) {
-    addHistory("Sin minutos disponibles para descanso.");
+    addHistory("No minutes available for a break.");
     return;
   }
   remainingSeconds = state.minutes * 60;
@@ -162,12 +168,12 @@ function startBreak() {
     elements.timer.textContent = formatTime(Math.max(remainingSeconds, 0));
     if (remainingSeconds <= 0) {
       clearInterval(breakTimer);
-      addHistory("Break finalizado. Regresando a focus.");
+      addHistory("Break complete. Returning to focus.");
       document.body.classList.add("closed-mode");
       setTimeout(() => document.body.classList.remove("closed-mode"), 1200);
     }
   }, 1000);
-  addHistory("Break iniciado.");
+  addHistory("Break started.");
 }
 
 function formatTime(seconds) {
@@ -176,16 +182,16 @@ function formatTime(seconds) {
   return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-function convertPoints() {
+function convertPoints({ silent = false } = {}) {
   const { ratioPoints, ratioMinutes } = state.settings;
   if (state.points < ratioPoints) {
-    addHistory("No hay suficientes puntos para convertir.");
+    if (!silent) addHistory("Not enough points to convert.");
     return;
   }
   const packs = Math.floor(state.points / ratioPoints);
   state.points -= packs * ratioPoints;
   state.minutes += packs * ratioMinutes;
-  addHistory(`Convertidos ${packs * ratioPoints} pts en ${packs * ratioMinutes} min.`);
+  if (!silent) addHistory(`Converted ${packs * ratioPoints} pts into ${packs * ratioMinutes} min.`);
   updateStats();
   saveState();
 }
@@ -198,33 +204,40 @@ function hashFile(file) {
 function scanProof() {
   const file = elements.fileInput.files[0];
   if (!file) {
-    elements.scanResult.textContent = "Sube un archivo antes de escanear.";
+    elements.scanResult.textContent = "Upload a file before scanning.";
     return;
   }
   elements.scanHud.classList.remove("hidden");
+  const safetyTimeout = setTimeout(() => {
+    elements.scanHud.classList.add("hidden");
+  }, 2600);
   playBeep(520, 0.08);
   setTimeout(() => {
+    clearTimeout(safetyTimeout);
     const hash = hashFile(file);
     const now = Date.now();
     let chance = 0.8;
     let warning = "";
     if (hash === state.lastHash && now - state.lastHashTime < 2 * 60 * 1000) {
       chance = 0.1;
-      warning = " (cooldown activo: evidencia repetida)";
+      warning = " (cooldown active: repeated proof)";
     }
     const approved = Math.random() < chance;
     state.lastHash = hash;
     state.lastHashTime = now;
     elements.scanHud.classList.add("hidden");
     if (approved) {
-      state.points += 10;
+      state.points += state.settings.scanReward;
       playBeep(880, 0.12);
-      elements.scanResult.textContent = `Aprobado +10 pts${warning}`;
-      addHistory(`Scan aprobado en ${elements.category.value}. +10 pts.`);
+      elements.scanResult.textContent = `Approved +${state.settings.scanReward} pts${warning}`;
+      addHistory(`Scan approved in ${elements.category.value}. +${state.settings.scanReward} pts.`);
+      if (state.settings.autoConvert) {
+        convertPoints({ silent: true });
+      }
     } else {
       playBeep(220, 0.2);
-      elements.scanResult.textContent = `Rechazado${warning}`;
-      addHistory(`Scan rechazado en ${elements.category.value}.`);
+      elements.scanResult.textContent = `Rejected${warning}`;
+      addHistory(`Scan rejected in ${elements.category.value}.`);
     }
     updateStats();
     saveState();
@@ -243,11 +256,14 @@ function handleFilePreview() {
 function applySettings() {
   const ratioPoints = Number(elements.ratioPoints.value) || 10;
   const ratioMinutes = Number(elements.ratioMinutes.value) || 5;
+  const scanReward = Number(elements.scanReward.value) || 10;
   state.settings.ratioPoints = Math.max(ratioPoints, 1);
   state.settings.ratioMinutes = Math.max(ratioMinutes, 1);
+  state.settings.scanReward = Math.max(scanReward, 1);
+  state.settings.autoConvert = elements.autoConvert.checked;
   updateStats();
   saveState();
-  addHistory("Settings actualizados.");
+  addHistory("Settings updated.");
 }
 
 function resetData() {
@@ -395,6 +411,9 @@ function initThreeScene(THREE) {
     eye.visible = Math.sin(t * 6) > -0.1;
     camera.position.x = Math.sin(t * 0.2) * 0.8;
     camera.lookAt(0, 0.8, 0);
+    grid.position.z = (t * 0.6) % 1;
+    key.intensity = 1 + Math.sin(t * 0.7) * 0.2;
+    fill.intensity = 0.9 + Math.cos(t * 0.5) * 0.2;
     particleMesh.rotation.y += 0.0008;
     renderer.render(scene, camera);
   }
@@ -444,6 +463,7 @@ function init() {
   initEvents();
   initBootSequence();
   initThree();
+  elements.scanHud.classList.add("hidden");
 }
 
 init();
