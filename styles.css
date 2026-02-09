@@ -406,64 +406,6 @@ body::before {
   color: var(--muted);
 }
 
-.scan-hud {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(5, 5, 16, 0.85);
-  z-index: 20;
-  color: #34ff9a;
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.scan-hud__ring {
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  border: 2px solid rgba(76, 201, 240, 0.5);
-  box-shadow: var(--glow);
-  position: relative;
-  animation: rotate 3.6s linear infinite;
-}
-
-.scan-hud__ring::after {
-  content: "";
-  position: absolute;
-  inset: 16px;
-  border-radius: 50%;
-  border: 1px dashed rgba(247, 37, 133, 0.5);
-  animation: rotate 5s linear reverse infinite;
-}
-
-.scan-hud__line {
-  position: absolute;
-  width: 280px;
-  height: 2px;
-  background: var(--magenta);
-  animation: scan 1.2s linear infinite;
-}
-
-.scan-hud p {
-  margin-top: 18px;
-  font-size: 12px;
-  letter-spacing: 0.4em;
-  text-shadow: 0 0 8px rgba(52, 255, 154, 0.7), 0 0 18px rgba(52, 255, 154, 0.4);
-  animation: flicker 1.4s infinite;
-}
-
-@keyframes scan {
-  0% { transform: translateY(-120px); }
-  50% { transform: translateY(120px); }
-  100% { transform: translateY(-120px); }
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 @keyframes pulse {
   0%, 100% { box-shadow: var(--glow); }
@@ -475,12 +417,6 @@ body::before {
   to { transform: translateY(60px); }
 }
 
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  40% { opacity: 0.7; }
-  60% { opacity: 0.9; }
-  80% { opacity: 0.5; }
-}
 
 @media (max-width: 720px) {
   .stat-row {
@@ -503,9 +439,6 @@ body::before {
   display: none;
 }
 
-.reduced-motion .scan-hud__line {
-  display: none;
-}
 
 .toggle {
   display: flex;
